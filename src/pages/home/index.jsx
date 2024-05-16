@@ -5,7 +5,11 @@ function HomePage() {
   return (
     <div>
       <Header />
-      <Carousel />
+      <Carousel slidePerView={1} category="Trending" autoplay />
+      <Carousel slidePerView={6} category="Trending" />
+      <Carousel slidePerView={6} category="Comedy" />
+      <Carousel slidePerView={6} category="Loan" />
+      <Carousel slidePerView={6} category="Action" />
     </div>
   );
 }

@@ -8,38 +8,45 @@ import "swiper/css/pagination";
 import "./index.scss";
 
 // import required modules
-import { Autoplay, Pagination } from "swiper/modules";
+import { Autoplay, Navigation, Pagination } from "swiper/modules";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
-export default function Carousel() {
+export default function Carousel({ slidePerView, category, autoplay }) {
+  const [movies, setmovies] = useState([]);
+  async function fetchMovie() {
+    const response = await axios.get(
+      "https://6627a8e2b625bf088c09307c.mockapi.io/netflix"
+    );
+    console.log(response.data);
+    setmovies(response.data);
+  }
+  useEffect(() => {
+    fetchMovie();
+  }, []);
   return (
     <>
       <Swiper
+        pagination={true}
+        modules={
+          autoplay
+            ? [Autoplay, Pagination, Navigation]
+            : [Pagination, Navigation]
+        }
         autoplay={{
           delay: 2500,
           disableOnInteraction: false,
         }}
-        pagination={true}
-        modules={[Pagination, Autoplay]}
         className="carousel"
+        slidesPerView={slidePerView}
       >
-        <SwiperSlide>
-          <img
-            src="https://image.tmdb.org/t/p/original/qsnXwGS7KBbX4JLqHvICngtR8qg.jpg"
-            alt=""
-          />
-        </SwiperSlide>
-        <SwiperSlide>
-          <img
-            src="https://image.tmdb.org/t/p/original/foGkPxpw9h8zln81j63mix5B7m8.jpg"
-            alt=""
-          />
-        </SwiperSlide>
-        <SwiperSlide>
-          <img
-            src="https://image.tmdb.org/t/p/original/2ZNFu0hkSVtAI6LRWGIlCPNd1Tj.jpg"
-            alt=""
-          />
-        </SwiperSlide>
+        {movies
+          .filter((movie) => movie.category == category)
+          .map((movie) => (
+            <SwiperSlide key={movie.id}>
+              <img src={movie.poster_path} alt="" />
+            </SwiperSlide>
+          ))}
       </Swiper>
     </>
   );
